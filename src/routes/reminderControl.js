@@ -10,6 +10,11 @@ const router = Router();
 router.get("/send-reminders", async (req, res) => {
   try {
     await connectToDatabase();
+    webPush.setVapidDetails(
+      "mailto:dev123gabriel@gmail.com",
+      "BHLOs2Z5r8k7u7bmOKqrMfnBQuOWnEc8bI2hJW-vTGHp4aNnNibOftiHa1R62CfoIbjTaaKhlBlNxUj4K54K_-k", // chave pública
+      "W8FNlXzA8YP43KqsJk7lzCDmgzbIB7VPb2caDusJqB4" // chave privada
+    );
 
     console.log("🔔 Cron job executando...");
 

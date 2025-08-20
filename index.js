@@ -25,14 +25,6 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-const webPush = require("web-push");
-
-webPush.setVapidDetails(
-  "mailto:dev123gabriel@gmail.com",
-  "BHLOs2Z5r8k7u7bmOKqrMfnBQuOWnEc8bI2hJW-vTGHp4aNnNibOftiHa1R62CfoIbjTaaKhlBlNxUj4K54K_-k", // chave pública
-  "W8FNlXzA8YP43KqsJk7lzCDmgzbIB7VPb2caDusJqB4" // chave privada
-);
-
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
