@@ -73,9 +73,11 @@ router.get("/reminders-list/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const lembretes = await ReminderModel.find({ userID });
+    const lembretes = await ReminderModel.find({ userID: id }).sort({
+      createdAt: -1,
+    }); // -1 = decrescente
 
-    return res.status(200).json({ ok: true, lembretes });
+    return res.status(200).json(lembretes);
   } catch (err) {
     console.error("Erro ao buscar lembretes:", err);
     return res.status(500).json({ ok: false, error: err.message });

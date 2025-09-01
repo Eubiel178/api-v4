@@ -9,6 +9,11 @@ const reminderSchema = new mongoose.Schema({
   remindAt: { type: Date, required: true },
   color: { type: String, required: false },
   isCron: { type: Boolean, default: true },
+  createdAt: {
+    required: false,
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const ReminderModel = mongoose.model("reminders", reminderSchema);
