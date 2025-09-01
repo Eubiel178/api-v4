@@ -25,7 +25,6 @@ router.get("/send-reminders", async (req, res) => {
       remindAt: hojeStr,
       notificado: false,
     });
-    console.log(lembretes);
 
     for (const lembrete of lembretes) {
       const sub = await SubscriptionModel.findOne({ userID: lembrete.userID });
@@ -40,6 +39,7 @@ router.get("/send-reminders", async (req, res) => {
           })
         );
         lembrete.notificado = true;
+        lembrete.remindedAt = new Date(); // <-- salva a data/hora em inglês
         await lembrete.save();
       } catch (err) {
         if (err.statusCode === 410 || err.statusCode === 404) {
