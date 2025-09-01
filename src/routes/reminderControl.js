@@ -68,14 +68,12 @@ router.post("/reminders", async (req, res) => {
   }
 });
 
-// Rota para listar todos os lembretes
-router.get("/reminders-list", async (req, res) => {
+// Rota para listar lembretes de um usuário pelo ID
+router.get("/reminders-list/:userID", async (req, res) => {
   try {
-    // garante conexão com o banco
-    // await connectToDatabase();
+    const { userID } = req.params;
 
-    // busca todos os lembretes (você pode adicionar filtros se quiser)
-    const lembretes = await ReminderModel.find();
+    const lembretes = await ReminderModel.find({ userID });
 
     return res.status(200).json({ ok: true, lembretes });
   } catch (err) {
@@ -104,13 +102,11 @@ router.put("/reminders/:id", async (req, res) => {
         .json({ ok: false, message: "Lembrete não encontrado" });
     }
 
-    return res
-      .status(200)
-      .json({
-        ok: true,
-        message: "Lembrete atualizado com sucesso",
-        lembrete: updatedReminder,
-      });
+    return res.status(200).json({
+      ok: true,
+      message: "Lembrete atualizado com sucesso",
+      lembrete: updatedReminder,
+    });
   } catch (err) {
     console.error("Erro ao editar lembrete:", err);
     return res.status(500).json({ ok: false, error: err.message });
