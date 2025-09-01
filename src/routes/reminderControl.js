@@ -73,7 +73,7 @@ router.get("/reminders-list/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
 
-    const lembretes = await ReminderModel.find({ userID: id }).sort({
+    const lembretes = await ReminderModel.find({ userID }).sort({
       createdAt: -1,
     }); // -1 = decrescente
 
