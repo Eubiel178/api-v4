@@ -68,6 +68,82 @@ router.post("/reminders", async (req, res) => {
   }
 });
 
+// Rota para listar todos os lembretes
+router.get("/reminders-list", async (req, res) => {
+  try {
+    // garante conexão com o banco
+    // await connectToDatabase();
+
+    // busca todos os lembretes (você pode adicionar filtros se quiser)
+    const lembretes = await ReminderModel.find();
+
+    return res.status(200).json({ ok: true, lembretes });
+  } catch (err) {
+    console.error("Erro ao buscar lembretes:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Rota para editar um lembrete pelo ID
+router.put("/reminders/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body; // campos a atualizar
+
+    // garante conexão com o banco
+    await connectToDatabase();
+
+    const updatedReminder = await ReminderModel.findByIdAndUpdate(id, updates, {
+      new: true, // retorna o documento atualizado
+      runValidators: true, // valida campos do modelo
+    });
+
+    if (!updatedReminder) {
+      return res
+        .status(404)
+        .json({ ok: false, message: "Lembrete não encontrado" });
+    }
+
+    return res
+      .status(200)
+      .json({
+        ok: true,
+        message: "Lembrete atualizado com sucesso",
+        lembrete: updatedReminder,
+      });
+  } catch (err) {
+    console.error("Erro ao editar lembrete:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Rota para deletar um lembrete pelo ID
+router.delete("/reminders/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // garante conexão com o banco (se ainda não estiver conectado)
+    await connectToDatabase();
+
+    const deleted = await ReminderModel.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res
+        .status(404)
+        .json({ ok: false, message: "Lembrete não encontrado" });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      message: "Lembrete deletado com sucesso",
+      lembrete: deleted,
+    });
+  } catch (err) {
+    console.error("Erro ao deletar lembrete:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 router.post("/save-subscription", async (req, res) => {
   const { userID, subscription } = req.body;
   if (!userID || !subscription) return res.status(400).send("Dados inválidos");
@@ -106,8 +182,6 @@ router.post("/save-subscription", async (req, res) => {
     res.status(500).send({ success: false, error: err.message });
   }
 });
-
-module.exports = router;
 
 // router.get("/reminders", async (req, res) => {
 //   try {
