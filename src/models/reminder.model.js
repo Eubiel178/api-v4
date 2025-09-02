@@ -11,8 +11,8 @@ const reminderSchema = new mongoose.Schema(
     color: { type: String, required: false },
     isCron: { type: Boolean, default: true },
     remindedAt: { type: Date, default: null }, // <-- novo campo em inglês
-  },
-  { timestamps: true }
+  }
+  // { timestamps: true }
 );
 
 const ReminderModel = mongoose.model("reminders", reminderSchema);
