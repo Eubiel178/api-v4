@@ -97,9 +97,10 @@ router.put("/reminders/:id", async (req, res) => {
     // garante conexão com o banco
     await connectToDatabase();
 
-    const updatedReminder = await ReminderModel.findByIdAndUpdate(
-      { taskId: id },
-      body
+    const updatedReminder = await ReminderModel.findOneAndUpdate(
+      { taskId: id }, // busca pelo campo taskId
+      updates, // dados a atualizar
+      { new: true } // retorna o documento atualizado
     );
 
     if (!updatedReminder) {
