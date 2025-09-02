@@ -88,7 +88,6 @@ router.get("/reminders-list/:userID", async (req, res) => {
     return res.status(500).json({ ok: false, error: err.message });
   }
 });
-
 // Rota para editar um lembrete pelo ID
 router.put("/reminders/:id", async (req, res) => {
   try {
@@ -98,10 +97,9 @@ router.put("/reminders/:id", async (req, res) => {
     // garante conexão com o banco
     await connectToDatabase();
 
-    const updatedReminder = await ReminderModel.findOneAndUpdate(
-      { _id: id },
-      { $set: updates },
-      { new: true }
+    const updatedReminder = await ReminderModel.findByIdAndUpdate(
+      { taskId: id },
+      body
     );
 
     if (!updatedReminder) {
