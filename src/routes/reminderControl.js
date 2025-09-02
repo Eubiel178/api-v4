@@ -25,6 +25,12 @@ router.get("/send-reminders", async (req, res) => {
       remindAt: hojeStr,
       notificado: false,
     });
+    function formatarDataParaAPI(date) {
+      const ano = date.getFullYear();
+      const mes = String(date.getMonth() + 1).padStart(2, "0"); // mês começa do 0
+      const dia = String(date.getDate()).padStart(2, "0");
+      return `${ano}/${mes}/${dia}`;
+    }
 
     for (const lembrete of lembretes) {
       const sub = await SubscriptionModel.findOne({ userID: lembrete.userID });
@@ -38,8 +44,9 @@ router.get("/send-reminders", async (req, res) => {
             message: lembrete?.description,
           })
         );
+
         lembrete.notificado = true;
-        lembrete.remindedAt = new Date(); // <-- salva a data/hora em inglês
+        lembrete.remindedAt = formatarDataParaAPI(new Date());
         await lembrete.save();
       } catch (err) {
         if (err.statusCode === 410 || err.statusCode === 404) {
