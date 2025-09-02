@@ -20,17 +20,16 @@ router.get("/send-reminders", async (req, res) => {
 
     console.log("🔔 Cron job executando...");
 
-    const hojeStr = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const ano = now.getFullYear();
+    const mes = String(now.getMonth() + 1).padStart(2, "0"); // meses começam do 0
+    const dia = String(now.getDate()).padStart(2, "0");
+    const hojeStr = `${ano}-${mes}-${dia}`;
+
     const lembretes = await ReminderModel.find({
       remindAt: hojeStr,
       notificado: false,
     });
-    function formatarDataParaAPI(date) {
-      const ano = date.getFullYear();
-      const mes = String(date.getMonth() + 1).padStart(2, "0"); // mês começa do 0
-      const dia = String(date.getDate()).padStart(2, "0");
-      return `${ano}/${mes}/${dia}`;
-    }
 
     for (const lembrete of lembretes) {
       const sub = await SubscriptionModel.findOne({ userID: lembrete.userID });
@@ -44,9 +43,10 @@ router.get("/send-reminders", async (req, res) => {
             message: lembrete?.description,
           })
         );
-
         lembrete.notificado = true;
-        lembrete.remindedAt = formatarDataParaAPI(new Date());
+        lembrete.remindedAt = new Date(); // <-- salva a data/hora em inglês
+        console.log(lembrete);
+
         await lembrete.save();
       } catch (err) {
         if (err.statusCode === 410 || err.statusCode === 404) {
